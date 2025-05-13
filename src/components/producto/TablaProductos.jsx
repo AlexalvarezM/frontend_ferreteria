@@ -49,15 +49,15 @@ const TablaProductos = ({
               <td>{producto.precio_unitario}</td>
               <td>{producto.stock}</td>
               <td>
-                {producto.imagen ? (
-                  <img
-                    src={producto.imagen}
-                    alt={producto.nombre_producto}
-                    style={{ maxWidth: '50px', maxHeight: '50px' }}
-                  />
-                ) : (
-                  'Sin imagen'
-                )}
+                  {producto.imagen ? (
+              <img
+                  src={`data:image/png;base64,${producto.imagen}`}
+                  alt={producto.nombre_producto}
+                  style={{ maxWidth: '100px' }}
+              />
+        ) : (
+             'Sin imagen'
+        )}
               </td>
               <td>
                 <Button
