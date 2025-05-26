@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react';
 import TablaProductos from '../components/producto/TablaProductos';
 import ModalRegistroProducto from '../components/producto/ModalRegistroProducto';
 import { Container, Button, Alert, Form } from 'react-bootstrap';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 const Productos = () => {
   const [listaProductos, setListaProductos] = useState([]);
@@ -78,7 +80,81 @@ const Productos = () => {
       !productoActual.stock
     ) {
       setErrorCarga('Por favor, completa todos los campos requeridos.');
-      return;
+
+      const generarPDFProductos = () => {
+        const doc=new jsPDF();
+
+        // Encabezado del PDF
+        doc,setFillcolor(28,41,51);
+        doc,React(0,0,220,30,'F' );//ancho completo, alto completo
+
+        // Título centrado con texto blanco
+       doc.setTextColor(255, 255, 255); // Color del titulo
+       doc.setFontSize(28);
+       doc.text("Lista de Productos", doc.internal.pageSize.getWidth() / 2, 18, { align: "center" });
+
+    const columnas = [ "ID", "Nombre", "Descripción", "Categoria", "Precio", "Stock"];
+    const filas = productosFiltrados.map( (producto) => [
+      producto.id_producto,
+      producto.nombre_producto,
+      producto.descripcion_producto,
+      producto.id_categoria,
+      `C$ ${producto.precio_unitario}`,
+      producto.stock,
+]);
+
+//Marcador para mostrar el total de paginas 
+const totalPaginas = "{total_pages_count_string}";
+
+//Configuración de la tabla
+autoTable(doc, {
+  head: [columnas],
+  body: filas,
+  startY: 40,
+  theme: "grid",
+  styles: { fontSize: 10, cellPadding: 2 },
+  margin: { top: 20, left: 14, right: 14 },
+  tableWidth: "auto", // Ajuste de ancho automatico
+  columnStyles: {
+    0: { cellWidth: 'auto' }, // Ajuste de ancho automatico
+    1: { cellWidth: 'auto' },
+    2: { cellWidth: 'auto' },
+  },
+  pageBreak: "auto",
+  rowPageBreak: "auto",
+  // Hook que se ejecuta al dibujar cada página
+  didDrawPage: function (data) {
+    // Altura y ancho de la pagina actual
+    const alturaPagina = doc.internal.pageSize.getHeight();
+    const anchoPagina = doc.internal.pageSize.getWidth();
+
+    // Número de página actual
+    const numeroPagina = doc.internal.getNumberOfPages();
+
+    // Definir texto de número de página en el centro del documento
+    doc.setFontSize(10);
+    doc.setTextColor(0, 0, 0);
+    const piePagina = `Página ${numeroPagina} de ${totalPaginas}`;
+    doc.text(piePagina, anchoPagina / 2 + 15, alturaPagina - 10, { align: "center" });
+  },
+});
+
+//Actualizar el marcador 
+if (typeof doc.putTotalPages === 'function' ) {
+  doc.putTotalPages(totalPaginas);
+}
+
+// Guardar el PDF con un nombre basado en la fecha actual
+const fecha = new Date();
+const dia = String(fecha.getDate()).padStart(2, '0');
+const mes = String(fecha.getMonth() + 1).padStart(2, '0');
+const anio = fecha.getFullYear();
+const nombreArchivo = `productos_${dia}${mes}${anio}.pdf`;
+
+//Guardar el documento PDF
+doc.save(nombreArchivo);
+
+      }
     }
 
     try {
@@ -158,6 +234,8 @@ const Productos = () => {
       >
         Nuevo Producto
       </Button>
+
+      
 
       <Form.Group controlId="formBusqueda" className="mt-3 mb-3">
         <div className="input-group">
