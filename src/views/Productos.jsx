@@ -220,63 +220,83 @@ doc.save(nombreArchivo);
     paginaActual * elementosPorPagina
   );
 
-  return (
-    <Container className="mt-5">
-      <h4>Productos</h4>
+    return (
+    <>
+      <Container className="mt-5">
+        <br />
+        <h4>Productos</h4>
 
-      <Button
-        variant="primary"
-        onClick={() => {
-          setMostrarModal(true);
-          setModoEdicion(false);
-          setProductoActual(estadoInicialProducto);
-        }}
-      >
-        Nuevo Producto
-      </Button>
+        <Row>
+        <Col lg={2} md={4} sm={4} xs={5}> 
+        <Button variant="primary" onClick={() => setMostrarModal(true)}  style={{ width: "100%"}}>
+          Nuevo Producto
+        </Button>
+        </Col>
 
-      
+        <Col lg={3} md={4} sm={4} xs={5}>
+        <Button
+          className="mb-3"
+          onClick={generarPDFProductos}
+          variant="secondary"
+          style={{ width: "100%" }}
+        >
+          Generar reporte PDF
+        </Button>
+        </Col>
 
-      <Form.Group controlId="formBusqueda" className="mt-3 mb-3">
-        <div className="input-group">
-          <span className="input-group-text">
-            <i className="fas fa-search"></i>
-          </span>
-          <Form.Control
-            type="text"
-            placeholder="Buscar por nombre o descripción"
-            value={filtroBusqueda}
-            onChange={(e) => setFiltroBusqueda(e.target.value)}
+        <Col lg={6} md={8} sm={8} xs={7}> 
+              <CuadroBusquedas
+            textoBusqueda={textoBusqueda}
+            manejarCambioBusqueda={manejarCambioBusqueda}
           />
-        </div>
-      </Form.Group>
+        </Col>
 
-      {errorCarga && <Alert variant="danger" className="mt-3">{errorCarga}</Alert>}
+        </Row>
+        <br/>
 
-      <TablaProductos
-        productos={productosPaginados}
-        cargando={cargando}
-        error={errorCarga}
-        onActualizar={manejarActualizar}
-        onEliminar={eliminarProducto}
-        totalElementos={productosFiltrados.length}
-        elementosPorPagina={elementosPorPagina}
-        paginaActual={paginaActual}
-        establecerPaginaActual={establecerPaginaActual}
-      />
 
-      <ModalRegistroProducto
-        mostrarModal={mostrarModal}
-        setMostrarModal={setMostrarModal}
-        nuevoProducto={productoActual}
-        manejarCambioInput={manejarCambioInput}
-        agregarProducto={modoEdicion ? actualizarProducto : agregarProducto}
-        actualizarProducto={actualizarProducto}
-        errorCarga={errorCarga}
-        categorias={listaCategorias}
-        esEdicion={modoEdicion}
-      />
-    </Container>
+        {/* Pasa los estados como props al componente TablaCategorias */}
+        <TablaProductos
+          productos={productoPaginadas} 
+          cargando={cargando} 
+          error={errorCarga} 
+          totalElementos={ListaProducto.length} // Total de elementos
+          elementosPorPagina={elementosPorPagina} // Elementos por página
+          paginaActual={paginaActual} // Página actual
+          establecerPaginaActual={establecerPaginaActual} // Método para cambiar página
+          abrirModalEdicion={abrirModalEdicion}
+          abrirModalEliminacion={abrirModalEliminacion}
+        />
+
+        <ModalRegistroProducto
+          mostrarModal={mostrarModal}
+          setMostrarModal={setMostrarModal}
+          nuevoProducto={nuevoProducto}
+          manejarCambioInput={manejarCambioInput}
+          agregarProducto={agregarProducto}
+          errorCarga={errorCarga}
+          categorias={listaCategorias}
+        />
+
+      <ModalEliminacionProductos
+          mostrarModalEliminacion={mostrarModalEliminacion}
+          setMostrarModalEliminacion={setMostrarModalEliminacion}
+          eliminarProducto={eliminarProducto}
+        />
+
+
+        <ModalEdicionProductos
+          mostrarModalEdicion={mostrarModalEdicion}
+          setMostrarModalEdicion={setMostrarModalEdicion}
+          productoEditado={productoEditado}
+          manejarCambioInputEdicion={manejarCambioInputEdicion}
+          actualizarProducto={actualizarProductos}
+          errorCarga={errorCarga}
+        />
+
+
+      </Container>
+    </>
   );
 };
 
