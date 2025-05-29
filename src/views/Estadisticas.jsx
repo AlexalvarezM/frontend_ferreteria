@@ -9,10 +9,10 @@ const Estadisticas = () => {
 useEffect(() => { 
     const cargaVentas = async () => { 
             try { 
-                const response = await fetch('http://localhost:3000/api/totalventaspordia'); 
-                const data = await response.json(); 
-                setMeses(data.map(item => item.mes)); 
-                setTotalesPorMes(data.map(item => item.total_ventas));
+                const response = await fetch('http://localhost:3000/api/totalventaspormes'); 
+                const datos = await response.json(); 
+                setMeses(datos.map(item => item.mes)); 
+                setTotalesPorMes(datos.map(item => item.total_ventas));
 
                 } catch (error) { 
                 console.error('Error al cargar ventas:', error); 
