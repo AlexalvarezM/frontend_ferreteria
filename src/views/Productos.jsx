@@ -237,7 +237,7 @@ const abrirModalEdicion = (producto) => {
 
       //Variables para valores de encabezado
       const columnas = ["ID", "Nombre", "Descripción", "Categoria", "Precio", "Stock"];
-      const filas = productoFiltrados.map((producto) => [
+      const filas = productoFiltradas.map((producto) => [
         producto.id_producto,
         producto.nombre_producto,
         producto.descripcion_producto,
